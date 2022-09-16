@@ -38,7 +38,8 @@ crypto ikev2 profile <NAME>
  authentication remote pre-share
  authentication local pre-share
  keyring local <CREATED KEYRING NAME>
- 
+
+#Note: You've to create multiple entry for multiple remote address
 
 ************* IPSEC Configuration **********************
 
