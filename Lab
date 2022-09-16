@@ -1,0 +1,215 @@
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<< On Hub Router (Main Center)  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+inter fa0/0
+ ip add 100.0.0.1 255.255.255.0
+
+
+
+router eigrp 150
+ network 100.0.0.0 0.0.0.255
+ network 192.168.0.0 0.0.0.255
+
+
+
+in tun 150
+ ip addr 192.168.0.1 255.255.255.0
+ tunnel source fa0/0
+ tunnel mode gre multipoint
+ ip nhrp network-id 150
+ ip nhrp map multicast dynamic
+ 
+ 
+ crypto ikev2 keyring DMVPN_KR
+  peer 100.0.0.2
+   address 100.0.0.2
+   pre-shared-key CISCO123
+  
+  peer 100.0.0.3
+   address 100.0.0.3
+   pre-shared-key CISCO123
+
+crypto ikev2 proposal IKEv2_PROPOSAL 
+ encryption aes-gcm-256
+ prf sha512
+ group 19
+
+
+crypto ikev2 policy 10 
+ match address local 100.0.0.1
+ proposal IKEv2_PROPOSAL
+ 
+
+
+ 
+crypto ikev2 profile IKEv2_PROFILE
+ match address local interface fa0/0
+ match identity remote address 100.0.0.2 255.255.255.255 
+ match identity remote address 100.0.0.3 255.255.255.255 
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local DMVPN_KR
+ 
+
+
+crypto ipsec transform-set ESP-AES-256-GCM esp-gcm 256 
+  mode tunnel
+  
+  
+crypto ipsec profile IPSEC_PROFILE
+ set transform-set ESP-AES-256-GCM 
+ set ikev2-profile IKEv2_PROFILE
+
+ 
+ 
+interface Tunnel150
+ tunnel protection ipsec profile PSEC_PROFILE
+ 
+ 
+ 
+ 
+ 
+ 
+ <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   On Spoke Router (A) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+inter fa0/0
+ ip add 100.0.0.2 255.255.255.0
+
+in tun 150
+ ip addr 192.168.0.2 255.255.255.0
+ tunnel source fa0/0
+ tunnel mode gre multipoint
+ ip nhrp network-id 150
+ ip nhrp nhs 192.168.0.1
+ ip nhrp map multicast 100.0.0.1
+ ip nhrp map 192.168.0.1 100.0.0.1
+ 
+  
+  
+router eigrp 150
+ network 100.0.0.0 0.0.0.255
+ network 192.168.0.0 0.0.0.255
+  
+  
+  
+ crypto ikev2 DMVPN_KR
+  peer 100.0.0.1
+  address 100.0.0.1
+  pre-shared-key CISCO123
+
+
+crypto ikev2 proposal IKEv2_PROPOSAL 
+ encryption aes-gcm-256
+ prf sha512
+ group 19
+
+
+crypto ikev2 policy IKEv2_POLICY 
+ match address local 100.0.0.2
+ proposal IKEv2_PROPOSAL
+
+
+crypto ikev2 profile IKEv2_PROFILE
+ match address local interface fa0/0 
+ match identity remote address 100.0.0.1 255.255.255.255
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local DMVPN_KR
+
+
+crypto ipsec transform-set ESP-AES-256-GCM esp-gcm 256 
+ mode tunnel
+ 
+	 
+crypto ipsec profile IPSEC_PROFILE
+	set transform-set ESP-AES-256-GCM 
+	set ikev2-profile IKEv2_PROFILE
+	 
+	 
+int tun 150
+   tunnel protection  ipsec profile IPSEC_PROFILE 
+   
+   
+   
+   
+   
+ <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   On Spoke Router (B) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  
+   
+   
+inter fa0/1
+ ip add 100.0.0.3 255.255.255.0
+
+in tun 150
+ ip addr 192.168.0.3 255.255.255.0
+ tunnel source fa0/1
+ tunnel mode gre multipoint
+ ip nhrp network-id 150
+ ip nhrp nhs 192.168.0.1
+ ip nhrp map multicast 100.0.0.1
+ ip nhrp map 192.168.0.1 100.0.0.1
+
+   
+  
+router eigrp 150
+ network 100.0.0.0 0.0.0.255
+ network 192.168.0.0 0.0.0.255
+   
+   
+   
+ crypto ikev2 DMVPN_KR
+  peer 100.0.0.1
+  address 100.0.0.1
+  pre-shared-key CISCO123
+
+
+crypto ikev2 proposal IKEv2_PROPOSAL 
+ encryption aes-gcm-256
+ prf sha512
+ group 19
+
+
+crypto ikev2 policy IKEv2_POLICY 
+ match address local 100.0.0.3
+ proposal IKEv2_PROPOSAL
+
+
+crypto ikev2 profile IKEv2_PROFILE
+ match address local interface fa0/0 
+ match identity remote address 100.0.0.1 255.255.255.255
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local DMVPN_KR
+
+
+crypto ipsec transform-set ESP-AES-256-GCM esp-gcm 256 
+ mode tunnel
+ 
+	 
+crypto ipsec profile IPSEC_PROFILE
+	set transform-set ESP-AES-256-GCM 
+	set ikev2-profile IKEv2_PROFILE
+	 
+	 
+int tun 150
+   tunnel protection  ipsec profile IPSEC_PROFILE 
+   
+   
+   
+   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
