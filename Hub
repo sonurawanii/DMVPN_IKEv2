@@ -21,9 +21,9 @@ crypto ikev2 keyring <NAME>
 #Note: You've to create multiple PEER entry for  multiple address 
 
 crypto ikev2 proposal <NAME> 
- encryption aes-gcm-256
- prf sha512
- group 19
+ encryption <SELECT>
+ prf <SELECT>
+ group <SELECT>
  
  
 crypto ikev2 policy <NAME> 
