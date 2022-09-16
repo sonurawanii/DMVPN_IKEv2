@@ -27,7 +27,7 @@ crypto ikev2 proposal <NAME>
  
  
 crypto ikev2 policy <NAME> 
- match address local <TUNNEL PUBLIC ADDRESS>
+ match address local <HUB TUNNEL PUBLIC ADDRESS>
  proposal <CREATED PROPOSAL NAME>
  
  
