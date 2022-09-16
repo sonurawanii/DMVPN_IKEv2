@@ -1,0 +1,61 @@
+
+
+************** Tunnel Configuration ****************
+
+in tun <NUMBER>
+ ip addr <LOCAL PREFIX>
+ tunnel source <OUTGOING INTERFACE>
+ tunnel mode gre multipoint
+ ip nhrp network-id <HUB NETWORK-ID>
+ ip nhrp nhs <HUB TUNNEL LOCAL IP ADDRESS>
+ ip nhrp map multicast <HUB PUBLIC IP ADDRESS>
+ ip nhrp map <HUB TUNNEL LOCAL IP ADDRESS> <HUB PUBLIC IP ADDRESS>
+ 
+ 
+ **************** IKEv2 Configuration ******************
+ 
+ crypto ikev2 <NAME>
+  peer <NAME>
+  address <HUB PUBLIC IP ADDRESS>
+  pre-shared-key <SECRET>
+
+
+crypto ikev2 proposal <NAME> 
+ encryption <SAME AS HUB>
+ prf <SAME AS HUB>
+ group <SAME AS HUB>
+
+
+crypto ikev2 policy <NAME>
+ match address local <SPOKE TUNNEL PUBLIC ADDRESS>
+ proposal <CREATED PROPOSAL>
+
+
+crypto ikev2 profile <NAME>
+ match address local interface <OUTGOING INTERFACE> 
+ match identity remote address <HUB TUNNEL PUBLIC ADDRES> 
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local <CREATED KEYRING>
+
+
+***************** IPSEC Configuration ********************
+
+
+crypto ipsec transform-set <NAME> <SELECT> 
+ mode tunnel
+ 
+	 
+crypto ipsec profile <NAME>
+	set transform-set <CREATED TRANSFORM-SET> 
+	set ikev2-profile <CREATE IKEv2 PROFILE>
+	 
+************ Map IPSEC with Tunnel *************************	
+  
+  
+int tun <NUMBER>
+   tunnel protection  ipsec profile <CREATED IPSEC PROFILE>
+   
+   
+   
+   
