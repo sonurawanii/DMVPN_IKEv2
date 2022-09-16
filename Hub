@@ -43,7 +43,7 @@ crypto ikev2 profile <NAME>
 ************* IPSEC Configuration **********************
 
 
-crypto ipsec transform-set <NAME> esp-gcm 256 
+crypto ipsec transform-set <NAME> <SELECT> 
   mode tunnel
   
  
