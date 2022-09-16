@@ -1,0 +1,63 @@
+
+
+*************** Tunnel Configuration *****************
+
+in tun <NUMBER>
+ ip addr <LOCAL PREFIX>
+ tunnel source <OUTGOING INTERFACE>
+ tunnel mode gre multipoint
+ ip nhrp network-id <NUMBER>
+ ip nhrp map multicast dynamic
+
+
+************ IKEv2 Configuration ********************
+
+
+crypto ikev2 keyring <NAME>
+  peer <PEER NAME>
+   address <PEER ADDRESS>
+   pre-shared-key <SECRET>
+
+#Note: You've to create multiple PEER entry for  multiple address 
+
+crypto ikev2 proposal <NAME> 
+ encryption aes-gcm-256
+ prf sha512
+ group 19
+ 
+ 
+crypto ikev2 policy <NAME> 
+ match address local <HUB PUBLIC ADDRESS>
+ proposal <CREATED PROPOSAL NAME>
+ 
+ 
+crypto ikev2 profile <NAME>
+ match address local interface <OUTGOING INTERFACE>
+ match identity remote address <REMOTE SPOKE PUBLIC PREFIX> 
+ match identity remote address <REMOTE SPOKE PUBLIC PREFIX>  
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local <CREATED KEYRING NAME>
+ 
+
+************* IPSEC Configuration **********************
+
+
+crypto ipsec transform-set <NAME> esp-gcm 256 
+  mode tunnel
+  
+ 
+crypto ipsec profile <NAME>
+ set transform-set <CREATED TRASNFORM-SET NAME> 
+ set ikev2-profile <CREATED IKEv2 PROFILE>
+
+ 
+ ***************** Map IPSEC into Tunnel ******************
+ 
+interface <TUNNEL>
+ tunnel protection ipsec profile <CREATED IPSEC PROFILE NAME>
+ 
+ 
+ 
+ 
+ 
