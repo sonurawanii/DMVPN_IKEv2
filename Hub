@@ -15,7 +15,7 @@ in tun <NUMBER>
 
 crypto ikev2 keyring <NAME>
   peer <PEER NAME>
-   address <PEER ADDRESS>
+   address <SPOKE ADDRESS>
    pre-shared-key <SECRET>
 
 #Note: You've to create multiple PEER entry for  multiple address 
